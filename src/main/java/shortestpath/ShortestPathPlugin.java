@@ -58,11 +58,16 @@ import shortestpath.pathfinder.Pathfinder;
 import shortestpath.pathfinder.PathfinderConfig;
 import shortestpath.pathfinder.SplitFlagMap;
 
+import lombok.extern.slf4j.Slf4j;
+
+import com.aggeplugins.MessageBus.*;
+
 @PluginDescriptor(
-    name = "Shortest Path",
+    name = "<html><font color=\"#73D216\">[A3]</font> Shortest Path</html>",
     description = "Draws the shortest path to a chosen destination on the map (right click a spot on the world map to use)",
     tags = {"pathfinder", "map", "waypoint", "navigation"}
 )
+@Slf4j
 public class ShortestPathPlugin extends Plugin {
     protected static final String CONFIG_GROUP = "shortestpath";
     private static final String ADD_START = "Add start";
@@ -113,6 +118,9 @@ public class ShortestPathPlugin extends Plugin {
     @Inject
     private WorldMapOverlay worldMapOverlay;
 
+    //@Inject
+    //private MessageManager messageManager;
+
     private Point lastMenuOpenedPoint;
     private WorldMapPoint marker;
     private WorldPoint transportStart;
@@ -128,11 +136,14 @@ public class ShortestPathPlugin extends Plugin {
     private Future<?> pathfinderFuture;
     private final Object pathfinderMutex = new Object();
     @Getter
-    private Pathfinder pathfinder;
+    public static Pathfinder pathfinder;
     @Getter
     private PathfinderConfig pathfinderConfig;
     @Getter
     private boolean startPointSet = false;
+
+    private MessageBus messageBus;
+    private Message<?, ?> msg;
 
     @Provides
     public ShortestPathConfig provideConfig(ConfigManager configManager) {
@@ -154,6 +165,13 @@ public class ShortestPathPlugin extends Plugin {
         if (config.drawDebugPanel()) {
             overlayManager.add(debugOverlayPanel);
         }
+
+        init();
+    }
+
+    private void init()
+    {   
+        messageBus = messageBus.instance();
     }
 
     @Override
@@ -168,6 +186,12 @@ public class ShortestPathPlugin extends Plugin {
             pathfindingExecutor.shutdownNow();
             pathfindingExecutor = null;
         }
+        finalizer();
+    }
+
+    private void finalizer()
+    {
+        messageBus = null;
     }
 
     public void restartPathfinding(WorldPoint start, WorldPoint end) {
@@ -240,12 +264,32 @@ public class ShortestPathPlugin extends Plugin {
     @Subscribe
     public void onGameTick(GameTick tick) {
         Player localPlayer = client.getLocalPlayer();
-        if (localPlayer == null || pathfinder == null) {
+        if (localPlayer == null) {
             return;
         }
 
+        if (messageBus.get("PATHING") != null) {
+            log.info("Recieved a Message to calculate path");
+            Message<String, WorldPoint> in = 
+                (Message<String, WorldPoint>) messageBus.get("PATHING");
+            setTarget(in.getValue());
+            messageBus.remove("PATHING");
+        }
+
+        /* @note Can maybe be done this other way, keeping the code: */
+        //log.info("Calculating path...");
+        //// don't remove message yet, keep alive until done calculating
+        //if (pathfinder.isDone()) {
+        //    Message<String, List<WorldPoint>> out = 
+        //        new Message<>("PATH", pathfinder.getPath());
+        //    messageBus.send("SHORTEST_PATH", out);
+        //    messageBus.remove("PATHING");
+        //}
+
         WorldPoint currentLocation = client.isInInstancedRegion() ?
             WorldPoint.fromLocalInstance(client, localPlayer.getLocalLocation()) : localPlayer.getWorldLocation();
+
+        // xxx can cause NullPointerException
         if (currentLocation.distanceTo(pathfinder.getTarget()) < config.reachedDistance()) {
             setTarget(null);
             return;
