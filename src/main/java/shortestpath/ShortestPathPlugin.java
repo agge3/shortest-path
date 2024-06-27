@@ -143,7 +143,7 @@ public class ShortestPathPlugin extends Plugin {
     private boolean startPointSet = false;
 
     private MessageBus messageBus;
-    private Message<?, ?> msg;
+    private Message<MessageID, ?> msg;
 
     @Provides
     public ShortestPathConfig provideConfig(ConfigManager configManager) {
@@ -268,13 +268,28 @@ public class ShortestPathPlugin extends Plugin {
             return;
         }
 
-        if (messageBus.get("PATHING") != null) {
-            log.info("Recieved a Message to calculate path");
-            Message<String, WorldPoint> in = 
-                (Message<String, WorldPoint>) messageBus.get("PATHING");
-            setTarget(in.getValue());
-            messageBus.remove("PATHING");
+        if (messageBus.query(MessageID.REQUEST_PATH)) {
+            msg = (Message<MessageID, WorldPoint>) 
+                messageBus.recieve(MessageID.REQUEST_PATH);
+            setTarget((WorldPoint) msg.getData());
         }
+
+        if (msg != null) {
+            if (pathfinder.isDone()) {
+                messageBus.send(new Message<MessageID, List<WorldPoint>>(
+                    MessageID.SEND_PATH, pathfinder.getPath()));
+                setTarget(null);
+                msg = null;
+                return; // xxx reset?
+            }
+        }
+
+        //    log.info("Recieved a Message to calculate path");
+        //    Message<String, WorldPoint> in = 
+        //        (Message<String, WorldPoint>) messageBus.get("PATHING");
+        //    setTarget(in.getValue());
+        //    messageBus.remove("PATHING");
+        //}
 
         /* @note Can maybe be done this other way, keeping the code: */
         //log.info("Calculating path...");
