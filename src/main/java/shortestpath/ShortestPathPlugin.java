@@ -184,7 +184,7 @@ public class ShortestPathPlugin extends Plugin {
     private boolean startPointSet = false;
 
     private MessageBus messageBus;
-    private Message<?, ?> msg;
+    private Message<MessageID, ?> msg;
 
     @Provides
     public ShortestPathConfig provideConfig(ConfigManager configManager) {
@@ -450,6 +450,7 @@ public class ShortestPathPlugin extends Plugin {
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         int currentLocation = WorldPointUtil.fromLocalInstance(client, localPlayer.getLocalLocation());
         for (int target : pathfinder.getTargets()) {
             if (WorldPointUtil.distanceBetween(currentLocation, target) < config.reachedDistance()) {
@@ -463,7 +464,30 @@ public class ShortestPathPlugin extends Plugin {
                 (Message<String, WorldPoint>) messageBus.get("PATHING");
             setTarget(in.getValue());
             messageBus.remove("PATHING");
+=======
+        if (messageBus.query(MessageID.REQUEST_PATH)) {
+            msg = (Message<MessageID, WorldPoint>) 
+                messageBus.recieve(MessageID.REQUEST_PATH);
+            setTarget((WorldPoint) msg.getData());
+>>>>>>> 78d70a6 (Integrating MessageBus)
         }
+
+        if (msg != null) {
+            if (pathfinder.isDone()) {
+                messageBus.send(new Message<MessageID, List<WorldPoint>>(
+                    MessageID.SEND_PATH, pathfinder.getPath()));
+                setTarget(null);
+                msg = null;
+                return; // xxx reset?
+            }
+        }
+
+        //    log.info("Recieved a Message to calculate path");
+        //    Message<String, WorldPoint> in = 
+        //        (Message<String, WorldPoint>) messageBus.get("PATHING");
+        //    setTarget(in.getValue());
+        //    messageBus.remove("PATHING");
+        //}
 
         /* @note Can maybe be done this other way, keeping the code: */
         //log.info("Calculating path...");
