@@ -2,7 +2,6 @@
 .idea
 build/
 out/
-<<<<<<< HEAD
 bin/
 
 .vscode/
@@ -17,12 +16,11 @@ output/
 cache.jar
 keys.json
 cache.zip
-=======
-bin
+
+# random files from build
 .classpath
 .factorypath
 .project
 .settings/org.eclipse.buildship.core.prefs
 .settings/org.eclipse.jdt.apt.core.prefs
 .settings/org.eclipse.jdt.core.prefs
->>>>>>> 2239c17 (unstaged commits)
