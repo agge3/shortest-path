@@ -9,6 +9,8 @@ import java.util.Set;
 import lombok.Getter;
 import shortestpath.PrimitiveIntList;
 import shortestpath.ShortestPathPlugin;
+import lombok.Setter;
+import net.runelite.api.coords.WorldPoint;
 import shortestpath.WorldPointUtil;
 
 public class Pathfinder implements Runnable {
@@ -17,9 +19,12 @@ public class Pathfinder implements Runnable {
     private volatile boolean cancelled = false;
 
     @Getter
-    private final int start;
+	@Setter
+    private int start;
+
+	@Setter
     @Getter
-    private final Set<Integer> targets;
+    private Set<Integer> targets;
 
     private final ShortestPathPlugin plugin;
     private final PathfinderConfig config;
@@ -55,6 +60,12 @@ public class Pathfinder implements Runnable {
         visited = new VisitedTiles(map);
         targetInWilderness = WildernessChecker.isInWilderness(targets);
         wildernessLevel = 31;
+    }
+
+    public void reset()
+    {
+        start = null;
+        targets = null;
     }
 
     public boolean isDone() {

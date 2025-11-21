@@ -74,14 +74,9 @@ import lombok.extern.slf4j.Slf4j;
 import com.aggeplugins.MessageBus.*;
 
 @PluginDescriptor(
-<<<<<<< HEAD
-    name = "Shortest Path",
+    name = "<html><font color=\"#73D216\">[A3]</font> Shortest Path</html>",
     description = "Draws the shortest path to a chosen destination on the map<br>" +
         "Right click on the world map or shift right click a tile to use",
-=======
-    name = "<html><font color=\"#73D216\">[A3]</font> Shortest Path</html>",
-    description = "Draws the shortest path to a chosen destination on the map (right click a spot on the world map to use)",
->>>>>>> 32f6c69 (Added static Pathfinder for export)
     tags = {"pathfinder", "map", "waypoint", "navigation"}
 )
 @Slf4j
@@ -185,6 +180,9 @@ public class ShortestPathPlugin extends Plugin {
 
     private MessageBus messageBus;
     private Message<MessageID, ?> msg;
+    private WorldPoint target;
+
+    public boolean started;
 
     @Provides
     public ShortestPathConfig provideConfig(ConfigManager configManager) {
@@ -211,12 +209,13 @@ public class ShortestPathPlugin extends Plugin {
             overlayManager.add(debugOverlayPanel);
         }
 
-        init();
+        this.init();
     }
 
     private void init()
-    {   
+    {
         messageBus = messageBus.instance();
+        started = false; // by default, not (started) pathing
     }
 
     @Override
@@ -225,18 +224,25 @@ public class ShortestPathPlugin extends Plugin {
         overlayManager.remove(pathMinimapOverlay);
         overlayManager.remove(pathMapOverlay);
         overlayManager.remove(pathMapTooltipOverlay);
-        overlayManager.remove(debugOverlayPanel);
 
-        if (pathfindingExecutor != null) {
-            pathfindingExecutor.shutdownNow();
-            pathfindingExecutor = null;
-        }
-        finalizer();
+        this.finalize();
+
+        // Release MessageBus instance
+        messageBus = null;
     }
 
     private void finalizer()
     {
+        setTarget(null);
         messageBus = null;
+        msg = null;
+        pathfinderConfig = null;
+        pathfinder = null;
+        pathfinderFuture = null;
+        //player = null;
+        lastLocation = null;
+        startPointSet = false;
+        lastClick = null;
     }
 
     public void restartPathfinding(int start, Set<Integer> ends, boolean canReviveFiltered) {
@@ -438,84 +444,101 @@ public class ShortestPathPlugin extends Plugin {
 
     @Subscribe
     public void onGameTick(GameTick tick) {
-        for (int i = 0; i < pendingTasks.size(); i++) {
-            if (pendingTasks.get(i).check(client.getTickCount())) {
-                pendingTasks.remove(i--).run();
-            }
-        }
-
         Player localPlayer = client.getLocalPlayer();
         if (localPlayer == null) {
-            return;
+            finalize(); // clean-up if there's no player location
+            return; // break-out
         }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-        int currentLocation = WorldPointUtil.fromLocalInstance(client, localPlayer.getLocalLocation());
-        for (int target : pathfinder.getTargets()) {
-            if (WorldPointUtil.distanceBetween(currentLocation, target) < config.reachedDistance()) {
-                setTarget(WorldPointUtil.UNDEFINED);
-                return;
-            }
-=======
-        if (messageBus.get("PATHING") != null) {
-            log.info("Recieved a Message to calculate path");
-            Message<String, WorldPoint> in = 
-                (Message<String, WorldPoint>) messageBus.get("PATHING");
-            setTarget(in.getValue());
-            messageBus.remove("PATHING");
-=======
         if (messageBus.query(MessageID.REQUEST_PATH)) {
-            msg = (Message<MessageID, WorldPoint>) 
-                messageBus.recieve(MessageID.REQUEST_PATH);
-            setTarget((WorldPoint) msg.getData());
->>>>>>> 78d70a6 (Integrating MessageBus)
+            finalize(); // always be null if there's no instructions to path
+            return; // break-out
         }
 
-        if (msg != null) {
-            if (pathfinder.isDone()) {
-                messageBus.send(new Message<MessageID, List<WorldPoint>>(
-                    MessageID.SEND_PATH, pathfinder.getPath()));
-                setTarget(null);
-                msg = null;
-                return; // xxx reset?
-            }
+        WorldPoint pos = client.isInInstancedRegion() ?
+            WorldPoint.fromLocalInstance(client,
+                                         localPlayer.getLocalLocation()) :
+            localPlayer.getWorldLocation();
+
+        // Get the Message if we don't have one.
+        if (msg == null) {
+            msg = (Message<MessageID, WorldPoint>)
+                messageBus.get(MessageID.REQUEST_PATH);
+            log.info("Received Message to path!");
+            target = (WorldPoint) msg.getData();
+            restartPathfinding(pos, target);
+            started = true;
         }
 
-        //    log.info("Recieved a Message to calculate path");
-        //    Message<String, WorldPoint> in = 
-        //        (Message<String, WorldPoint>) messageBus.get("PATHING");
-        //    setTarget(in.getValue());
-        //    messageBus.remove("PATHING");
-        //}
+        if (pathfinder != null) {
+            log.info("Target: " + target);
+            log.info("Pathfinder start: " + pathfinder.getStart());
+            log.info("Pathfinder target: " + pathfinder.getTarget());
+        }
 
-        /* @note Can maybe be done this other way, keeping the code: */
-        //log.info("Calculating path...");
-        //// don't remove message yet, keep alive until done calculating
-        //if (pathfinder.isDone()) {
-        //    Message<String, List<WorldPoint>> out = 
-        //        new Message<>("PATH", pathfinder.getPath());
-        //    messageBus.send("SHORTEST_PATH", out);
-        //    messageBus.remove("PATHING");
-        //}
-
-        WorldPoint currentLocation = client.isInInstancedRegion() ?
-            WorldPoint.fromLocalInstance(client, localPlayer.getLocalLocation()) : localPlayer.getWorldLocation();
+        if (pathfinder != null && pathfinder.isDone()) {
+            log.info("Calculated path size " + pathfinder.getPath().size());
+            // send path
+            messageBus.send(new Message<MessageID, List<WorldPoint>>(
+                MessageID.SEND_PATH, pathfinder.getPath()));
+            //setTarget(null);
+            finalize(); // cleanup
+            return; // and break-out
+        } else if (pathfinder == null) {
+            log.info("Pathfinder was null! Re-initializing...");
+            restartPathfinding(pos, target);
+            started = true;
+            return;
+        } else {
+            // If all conditions aren't met then Pathfinder is calculating.
+            log.info("Waiting for Pathfinder to calculate...");
+        }
 
         // xxx can cause NullPointerException
-        if (currentLocation.distanceTo(pathfinder.getTarget()) < config.reachedDistance()) {
-            setTarget(null);
-            return;
->>>>>>> 32f6c69 (Added static Pathfinder for export)
+        //if (currentLocation.distanceTo(pathfinder.getTarget()) < config.reachedDistance()) {
+        //    setTarget(null);
+        //    return;
+        //}
+
+        //if (!startPointSet && !isNearPath(currentLocation)) {
+        //    if (config.cancelInstead()) {
+        //        setTarget(WorldPointUtil.UNDEFINED);
+        //        return;
+        //    }
+        //    restartPathfinding(currentLocation, pathfinder.getTargets());
+        //}
+    }
+
+    /**
+     * Finalize procedure to always ensure a clean state for Pathfinder.
+     */
+    @Override
+    public void finalize()
+    {
+        synchronized (pathfinderMutex) {
+            if (pathfinder != null) {
+                pathfinder.cancel();
+                pathfinder = null;
+            }
         }
 
-        if (!startPointSet && !isNearPath(currentLocation)) {
-            if (config.cancelInstead()) {
-                setTarget(WorldPointUtil.UNDEFINED);
-                return;
-            }
-            restartPathfinding(currentLocation, pathfinder.getTargets());
+        if (pathfinderFuture != null) {
+            pathfinderFuture.cancel(true);
+            pathfinderFuture = null;
         }
+
+        if (pathfindingExecutor != null) {
+            pathfindingExecutor.shutdownNow();
+            pathfindingExecutor = null;
+        }
+
+        worldMapPointManager.remove(marker);
+        marker = null;
+        startPointSet = false;
+        target = null;
+        msg = null;
+
+        started = false;
     }
 
     @Subscribe
