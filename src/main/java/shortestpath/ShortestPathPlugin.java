@@ -267,7 +267,7 @@ public class ShortestPathPlugin extends Plugin {
 	 * Pathfinder API).
 	 */
 	public void restartPathfinding(WorldPoint start, WorldPoint end) {
-		Set<Integer> s = new ArrayList<>(1);
+		Set<Integer> s = new HashSet<>(1);
 		s.add(WorldPointUtil.packWorldPoint(end));
 		restartPathfinding(WorldPointUtil.packWorldPoint(start), s);
 	}
@@ -484,11 +484,11 @@ public class ShortestPathPlugin extends Plugin {
         }
 
         if (pathfinder != null && pathfinder.isDone()) {
-			path = pathfinder.getPathWp();
+			List<WorldPoint> path = pathfinder.getPathWp();
             log.info("Calculated path size " + path.size());
             // send path
             messageBus.send(new Message<MessageID, List<WorldPoint>>(
-                MessageID.SEND_PATH, path);
+                MessageID.SEND_PATH, path));
             //setTarget(WorldPointUtil.UNDEFINED);
             finalize(); // cleanup
             return; // and break-out
