@@ -231,20 +231,6 @@ public class ShortestPathPlugin extends Plugin {
         messageBus = null;
     }
 
-    private void finalizer()
-    {
-        setTarget(null);
-        messageBus = null;
-        msg = null;
-        pathfinderConfig = null;
-        pathfinder = null;
-        pathfinderFuture = null;
-        //player = null;
-        lastLocation = null;
-        startPointSet = false;
-        lastClick = null;
-    }
-
     public void restartPathfinding(int start, Set<Integer> ends, boolean canReviveFiltered) {
         synchronized (pathfinderMutex) {
             if (pathfinder != null) {
@@ -275,6 +261,16 @@ public class ShortestPathPlugin extends Plugin {
     public void restartPathfinding(int start, Set<Integer> ends) {
         restartPathfinding(start, ends, true);
     }
+
+	/**
+	 * Wrapper method to restart pathfinding with WorldPoints (instead of
+	 * Pathfinder API).
+	 */
+	public void restartPathfinding(WorldPoint start, WorldPoint end) {
+		Set<Integer> s = new ArrayList<>(1);
+		s.add(WorldPointUtil.packWorldPoint(end));
+		restartPathfinding(WorldPointUtil.packWorldPoint(start), s);
+	}
 
     public boolean isNearPath(int location) {
         PrimitiveIntList path = null;
@@ -444,14 +440,15 @@ public class ShortestPathPlugin extends Plugin {
 
     @Subscribe
     public void onGameTick(GameTick tick) {
-        Player localPlayer = client.getLocalPlayer();
-        if (localPlayer == null) {
-            finalize(); // clean-up if there's no player location
+      if (!messageBus.query(MessageID.REQUEST_PATH)) {
+            finalize(); // always be null if there's no instructions to path
             return; // break-out
         }
 
-        if (messageBus.query(MessageID.REQUEST_PATH)) {
-            finalize(); // always be null if there's no instructions to path
+        Player localPlayer = client.getLocalPlayer();
+        if (localPlayer == null) {
+			log.error("localPlayer is null, cannot pathfind!");
+            finalize(); // clean-up if there's no player location
             return; // break-out
         }
 
@@ -466,14 +463,24 @@ public class ShortestPathPlugin extends Plugin {
                 messageBus.get(MessageID.REQUEST_PATH);
             log.info("Received Message to path!");
             target = (WorldPoint) msg.getData();
+
             restartPathfinding(pos, target);
-            started = true;
+            started = true;	// xxx what's started doing?
         }
 
         if (pathfinder != null) {
             log.info("Target: " + target);
             log.info("Pathfinder start: " + pathfinder.getStart());
-            log.info("Pathfinder target: " + pathfinder.getTarget());
+			Set<Integer> s = pathfinder.getTargets();
+			log.info("pathfinder targets size: {}", s.size();
+			if (s.size() > 1) {
+				log.warn("pathfinder targets size expected to be <=1, but >1: {}", s.size());
+			}
+			int idx = 0;
+			for (Integer e : s) {
+				log.info("pathfinder targets[{}]: {}", idx, e);
+				idx++;
+			}
         }
 
         if (pathfinder != null && pathfinder.isDone()) {

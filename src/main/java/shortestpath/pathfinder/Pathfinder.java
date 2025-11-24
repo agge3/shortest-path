@@ -64,7 +64,7 @@ public class Pathfinder implements Runnable {
 
     public void reset()
     {
-        start = null;
+        start = -1;	// xxx what's invalid sentinel int?
         targets = null;
     }
 
@@ -98,6 +98,21 @@ public class Pathfinder implements Runnable {
 
         return path;
     }
+
+	/**
+	 * Return path as WorldPoints instead of APIs packed PrimitiveIntList, for
+	 * cross-plugin pathing consistent with WorldPoints.
+	 */
+	public List<WorldPoint> getPathWp() {
+		PrimitiveIntList primPath = getPath();
+		List<WorldPoint> wpPath = new ArrayList<>(primPath.size());
+
+		for (int i = 0; i < primPath.size(); ++i) {
+			wpPath.add(WorldPointUtil.unpackWorldPoint(primPath.get(i));
+		}
+
+		return wpPath;
+	}
 
     private void addNeighbors(Node node) {
         List<Node> nodes = map.getNeighbors(node, visited, config, wildernessLevel);
