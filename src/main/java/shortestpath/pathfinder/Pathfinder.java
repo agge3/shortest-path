@@ -108,7 +108,7 @@ public class Pathfinder implements Runnable {
 		List<WorldPoint> wpPath = new ArrayList<>(primPath.size());
 
 		for (int i = 0; i < primPath.size(); ++i) {
-			wpPath.add(WorldPointUtil.unpackWorldPoint(primPath.get(i));
+			wpPath.add(WorldPointUtil.unpackWorldPoint(primPath.get(i)));
 		}
 
 		return wpPath;

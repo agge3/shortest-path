@@ -472,7 +472,7 @@ public class ShortestPathPlugin extends Plugin {
             log.info("Target: " + target);
             log.info("Pathfinder start: " + pathfinder.getStart());
 			Set<Integer> s = pathfinder.getTargets();
-			log.info("pathfinder targets size: {}", s.size();
+			log.info("pathfinder targets size: {}", s.size());
 			if (s.size() > 1) {
 				log.warn("pathfinder targets size expected to be <=1, but >1: {}", s.size());
 			}
@@ -484,11 +484,12 @@ public class ShortestPathPlugin extends Plugin {
         }
 
         if (pathfinder != null && pathfinder.isDone()) {
-            log.info("Calculated path size " + pathfinder.getPath().size());
+			path = pathfinder.getPathWp();
+            log.info("Calculated path size " + path.size());
             // send path
             messageBus.send(new Message<MessageID, List<WorldPoint>>(
-                MessageID.SEND_PATH, pathfinder.getPath()));
-            //setTarget(null);
+                MessageID.SEND_PATH, path);
+            //setTarget(WorldPointUtil.UNDEFINED);
             finalize(); // cleanup
             return; // and break-out
         } else if (pathfinder == null) {
@@ -503,7 +504,7 @@ public class ShortestPathPlugin extends Plugin {
 
         // xxx can cause NullPointerException
         //if (currentLocation.distanceTo(pathfinder.getTarget()) < config.reachedDistance()) {
-        //    setTarget(null);
+        //    setTarget(WorldPointUtil.UNDEFINED);
         //    return;
         //}
 
