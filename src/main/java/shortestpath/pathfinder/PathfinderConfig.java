@@ -172,57 +172,60 @@ public class PathfinderConfig {
 
     public void refresh() {
         calculationCutoffMillis = config.calculationCutoff() * Constants.GAME_TICK_LENGTH;
-        avoidWilderness = ShortestPathPlugin.override("avoidWilderness", config.avoidWilderness());
-        useAgilityShortcuts = ShortestPathPlugin.override("useAgilityShortcuts", config.useAgilityShortcuts());
-        useGrappleShortcuts = ShortestPathPlugin.override("useGrappleShortcuts", config.useGrappleShortcuts());
-        useBoats = ShortestPathPlugin.override("useBoats", config.useBoats());
-        useCanoes = ShortestPathPlugin.override("useCanoes", config.useCanoes());
-        useCharterShips = ShortestPathPlugin.override("useCharterShips", config.useCharterShips());
-        useShips = ShortestPathPlugin.override("useShips", config.useShips());
-        useFairyRings = ShortestPathPlugin.override("useFairyRings", config.useFairyRings());
-        useGnomeGliders = ShortestPathPlugin.override("useGnomeGliders", config.useGnomeGliders());
-        useHotAirBalloons = ShortestPathPlugin.override("useHotAirBalloons", config.useHotAirBalloons());
-        useMagicCarpets = ShortestPathPlugin.override("useMagicCarpets", config.useMagicCarpets());
-        useMagicMushtrees = ShortestPathPlugin.override("useMagicMushtrees", config.useMagicMushtrees());
-        useMinecarts = ShortestPathPlugin.override("useMinecarts", config.useMinecarts());
-        useQuetzals = ShortestPathPlugin.override("useQuetzals", config.useQuetzals());
-        useSeasonalTransports = ShortestPathPlugin.override("useSeasonalTransports", config.useSeasonalTransports());
-        useSpiritTrees = ShortestPathPlugin.override("useSpiritTrees", config.useSpiritTrees());
-        useTeleportationItems = ShortestPathPlugin.override("useTeleportationItems", config.useTeleportationItems());
-        useTeleportationBoxes = ShortestPathPlugin.override("useTeleportationBoxes", config.useTeleportationBoxes());
-        useTeleportationLevers = ShortestPathPlugin.override("useTeleportationLevers", config.useTeleportationLevers());
-        useTeleportationMinigames = ShortestPathPlugin.override("useTeleportationMinigames", config.useTeleportationMinigames());
-        useTeleportationPortals = ShortestPathPlugin.override("useTeleportationPortals", config.useTeleportationPortals());
-        useTeleportationPortalsPoh = ShortestPathPlugin.override("useTeleportationPortalsPoh", config.useTeleportationPortalsPoh());
-        useTeleportationSpells = ShortestPathPlugin.override("useTeleportationSpells", config.useTeleportationSpells());
-        useWildernessObelisks = ShortestPathPlugin.override("useWildernessObelisks", config.useWildernessObelisks());
-        currencyThreshold = ShortestPathPlugin.override("currencyThreshold", config.currencyThreshold());
-        includeBankPath = ShortestPathPlugin.override("includeBankPath", config.includeBankPath());
+        avoidWilderness = config.avoidWilderness();
+        useAgilityShortcuts = config.useAgilityShortcuts();
+        useGrappleShortcuts = config.useGrappleShortcuts();
+        useBoats = config.useBoats();
+        useCanoes = config.useCanoes();
+        useCharterShips = config.useCharterShips();
+        useShips = config.useShips();
+        useFairyRings = config.useFairyRings();
+        useGnomeGliders = config.useGnomeGliders();
+        useHotAirBalloons = config.useHotAirBalloons();
+        useMagicCarpets = config.useMagicCarpets();
+        useMagicMushtrees = config.useMagicMushtrees();
+        useMinecarts = config.useMinecarts();
+        useQuetzals = config.useQuetzals();
+        useSeasonalTransports = config.useSeasonalTransports();
+        useSpiritTrees = config.useSpiritTrees();
+        useTeleportationItems = config.useTeleportationItems();
+        useTeleportationBoxes = config.useTeleportationBoxes();
+        useTeleportationLevers = config.useTeleportationLevers();
+        useTeleportationMinigames = config.useTeleportationMinigames();
+        useTeleportationPortals = config.useTeleportationPortals();
+        useTeleportationPortalsPoh = config.useTeleportationPortalsPoh();
+        useTeleportationSpells = config.useTeleportationSpells();
+        useWildernessObelisks = config.useWildernessObelisks();
+        currencyThreshold = config.currencyThreshold();
+        includeBankPath = config.includeBankPath();
         bankVisited = !includeBankPath;
         artificialTransportCosts = new EnumMap<>(TransportType.class);
-        artificialTransportCosts.put(TransportType.AGILITY_SHORTCUT, ShortestPathPlugin.override("costAgilityShortcuts", config.costAgilityShortcuts()));
-        artificialTransportCosts.put(TransportType.GRAPPLE_SHORTCUT, ShortestPathPlugin.override("costGrappleShortcuts", config.costGrappleShortcuts()));
-        artificialTransportCosts.put(TransportType.BOAT, ShortestPathPlugin.override("costBoats", config.costBoats()));
-        artificialTransportCosts.put(TransportType.CANOE, ShortestPathPlugin.override("costCanoes", config.costCanoes()));
-        artificialTransportCosts.put(TransportType.CHARTER_SHIP, ShortestPathPlugin.override("costCharterShips", config.costCharterShips()));
-        artificialTransportCosts.put(TransportType.SHIP, ShortestPathPlugin.override("costShips", config.costShips()));
-        artificialTransportCosts.put(TransportType.FAIRY_RING, ShortestPathPlugin.override("costFairyRings", config.costFairyRings()));
-        artificialTransportCosts.put(TransportType.GNOME_GLIDER, ShortestPathPlugin.override("costGnomeGliders", config.costGnomeGliders()));
-        artificialTransportCosts.put(TransportType.HOT_AIR_BALLOON, ShortestPathPlugin.override("costHotAirBalloons", config.costHotAirBalloons()));
-        artificialTransportCosts.put(TransportType.MAGIC_CARPET, ShortestPathPlugin.override("costMagicCarpets", config.costMagicCarpets()));
-        artificialTransportCosts.put(TransportType.MAGIC_MUSHTREE, ShortestPathPlugin.override("costMagicMushtrees", config.costMagicMushtrees()));
-        artificialTransportCosts.put(TransportType.MINECART, ShortestPathPlugin.override("costMinecarts", config.costMinecarts()));
-        artificialTransportCosts.put(TransportType.QUETZAL, ShortestPathPlugin.override("costQuetzals", config.costQuetzals()));
-        artificialTransportCosts.put(TransportType.SEASONAL_TRANSPORTS, ShortestPathPlugin.override("costSeasonalTransports", config.costSeasonalTransports()));
-        artificialTransportCosts.put(TransportType.SPIRIT_TREE, ShortestPathPlugin.override("costSpiritTrees", config.costSpiritTrees()));
-        artificialTransportCosts.put(TransportType.TELEPORTATION_ITEM, ShortestPathPlugin.override("costNonConsumableTeleportationItems", config.costNonConsumableTeleportationItems()));
-        artificialTransportCosts.put(TransportType.TELEPORTATION_BOX, ShortestPathPlugin.override("costTeleportationBoxes", config.costTeleportationBoxes()));
-        artificialTransportCosts.put(TransportType.TELEPORTATION_LEVER, ShortestPathPlugin.override("costTeleportationLevers", config.costTeleportationLevers()));
-        artificialTransportCosts.put(TransportType.TELEPORTATION_MINIGAME, ShortestPathPlugin.override("costTeleportationMinigames", config.costTeleportationMinigames()));
-        artificialTransportCosts.put(TransportType.TELEPORTATION_PORTAL, ShortestPathPlugin.override("costTeleportationPortals", config.costTeleportationPortals()));
-        artificialTransportCosts.put(TransportType.TELEPORTATION_SPELL, ShortestPathPlugin.override("costTeleportationSpells", config.costTeleportationSpells()));
-        artificialTransportCosts.put(TransportType.WILDERNESS_OBELISK, ShortestPathPlugin.override("costWildernessObelisks", config.costWildernessObelisks()));
-        costConsumableTeleportationItems = ShortestPathPlugin.override("costConsumableTeleportationItems", config.costConsumableTeleportationItems());
+
+		// COST CONFIG BEGIN
+        artificialTransportCosts.put(TransportType.AGILITY_SHORTCUT, config.costAgilityShortcuts());
+        artificialTransportCosts.put(TransportType.GRAPPLE_SHORTCUT, config.costGrappleShortcuts());
+        artificialTransportCosts.put(TransportType.BOAT, config.costBoats());
+        artificialTransportCosts.put(TransportType.CANOE, config.costCanoes());
+        artificialTransportCosts.put(TransportType.CHARTER_SHIP, config.costCharterShips());
+        artificialTransportCosts.put(TransportType.SHIP, config.costShips());
+        artificialTransportCosts.put(TransportType.FAIRY_RING, config.costFairyRings());
+        artificialTransportCosts.put(TransportType.GNOME_GLIDER, config.costGnomeGliders());
+        artificialTransportCosts.put(TransportType.HOT_AIR_BALLOON, config.costHotAirBalloons());
+        artificialTransportCosts.put(TransportType.MAGIC_CARPET, config.costMagicCarpets());
+        artificialTransportCosts.put(TransportType.MAGIC_MUSHTREE, config.costMagicMushtrees());
+        artificialTransportCosts.put(TransportType.MINECART, config.costMinecarts());
+        artificialTransportCosts.put(TransportType.QUETZAL, config.costQuetzals());
+        artificialTransportCosts.put(TransportType.SEASONAL_TRANSPORTS, config.costSeasonalTransports());
+        artificialTransportCosts.put(TransportType.SPIRIT_TREE, config.costSpiritTrees());
+        artificialTransportCosts.put(TransportType.TELEPORTATION_ITEM, config.costNonConsumableTeleportationItems());
+        artificialTransportCosts.put(TransportType.TELEPORTATION_BOX, config.costTeleportationBoxes());
+        artificialTransportCosts.put(TransportType.TELEPORTATION_LEVER, config.costTeleportationLevers());
+        artificialTransportCosts.put(TransportType.TELEPORTATION_MINIGAME, config.costTeleportationMinigames());
+        artificialTransportCosts.put(TransportType.TELEPORTATION_PORTAL, config.costTeleportationPortals());
+        artificialTransportCosts.put(TransportType.TELEPORTATION_SPELL, config.costTeleportationSpells());
+        artificialTransportCosts.put(TransportType.WILDERNESS_OBELISK, config.costWildernessObelisks());
+        costConsumableTeleportationItems = config.costConsumableTeleportationItems();
+		// COST CONFIG END
 
         if (GameState.LOGGED_IN.equals(client.getGameState())) {
             int i = 0;
@@ -305,7 +308,7 @@ public class PathfinderConfig {
             }
             // If all destinations of a destination type have been filtered away then we don't add the entry
             if (!usableDestinations.isEmpty()) {
-                // If no destinations of a destination type have been filtered away then we re-use the same set reference
+                // If no destinations of a destination type have been filtered away then we reuse the same set reference
                 filteredDestinations.put(destinationType, isDifferent ? usableDestinations : entry.getValue());
             }
         }

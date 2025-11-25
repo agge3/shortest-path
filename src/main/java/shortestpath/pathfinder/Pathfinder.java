@@ -213,8 +213,6 @@ public class Pathfinder implements Runnable {
         pending.clear();
 
         stats.end(); // Include cleanup in stats to get the total cost of pathfinding
-
-        plugin.postPluginMessages();
     }
 
     public static class PathfinderStats {

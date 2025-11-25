@@ -285,113 +285,7 @@ public interface ShortestPathConfig extends Config {
         return true;
     }
 
-    @ConfigItem(
-        keyName = "useSeasonalTransports",
-        name = "Use seasonal transports",
-        description = "Whether to include seasonal transports like League teleports in the path",
-        position = 24,
-        section = sectionSettings
-    )
-    default boolean useSeasonalTransports() {
-        return false;
-    }
 
-    @ConfigItem(
-        keyName = "includeBankPath",
-        name = "Include path to bank",
-        description = "Whether to include the path to the closest bank<br>" +
-            "when suggesting teleports from the bank",
-        position = 25,
-        section = sectionSettings
-    )
-    default boolean includeBankPath() {
-        return false;
-    }
-
-    @ConfigItem(
-        keyName = "currencyThreshold",
-        name = "Currency threshold",
-        description = "The maximum amount of currency to use on a single transportation method." +
-            "<br>The currencies affected by the threshold are coins, trading sticks, ecto-tokens and warrior guild tokens.",
-        position = 26,
-        section = sectionSettings
-    )
-    default int currencyThreshold() {
-        return 100000;
-    }
-
-    @ConfigItem(
-        keyName = "cancelInstead",
-        name = "Cancel instead of recalculating",
-        description = "Whether the path should be cancelled rather than recalculated " +
-            "when the recalculate distance limit is exceeded",
-        position = 27,
-        section = sectionSettings
-    )
-    default boolean cancelInstead() {
-        return false;
-    }
-
-    @Range(
-        min = -1,
-        max = 20000
-    )
-    @ConfigItem(
-        keyName = "recalculateDistance",
-        name = "Recalculate distance",
-        description = "Distance from the path the player should be for it to be recalculated (-1 for never)",
-        position = 28,
-        section = sectionSettings
-    )
-    default int recalculateDistance() {
-        return 10;
-    }
-
-    @Range(
-        min = -1,
-        max = 50
-    )
-    @ConfigItem(
-        keyName = "finishDistance",
-        name = "Finish distance",
-        description = "Distance from the target tile at which the path should be ended (-1 for never)",
-        position = 29,
-        section = sectionSettings
-    )
-    default int reachedDistance() {
-        return 5;
-    }
-
-    @ConfigItem(
-        keyName = "showTileCounter",
-        name = "Show tile counter",
-        description = "Whether to display the number of tiles travelled, number of tiles remaining or disable counting",
-        position = 30,
-        section = sectionSettings
-    )
-    default TileCounter showTileCounter() {
-        return TileCounter.DISABLED;
-    }
-
-    @ConfigItem(
-        keyName = "tileCounterStep",
-        name = "Tile counter step",
-        description = "The number of tiles between the displayed tile counter numbers",
-        position = 31,
-        section = sectionSettings
-    )
-    default int tileCounterStep()
-    {
-        return 1;
-    }
-
-    @Units(
-        value = Units.TICKS
-    )
-    @Range(
-        min = 1,
-        max = 30
-    )
     @ConfigItem(
         keyName = "calculationCutoff",
         name = "Calculation cutoff",
@@ -406,442 +300,14 @@ public interface ShortestPathConfig extends Config {
     }
 
     @ConfigItem(
-        keyName = "showTransportInfo",
-        name = "Show transport info",
-        description = "Whether to display transport destination hint info, e.g. which chat option and text to click",
-        position = 33,
-        section = sectionSettings
-    )
-    default boolean showTransportInfo() {
-        return true;
-    }
-
-    @ConfigSection(
-        name = "Transport Thresholds",
-        description = "Set customizable thresholds for how much faster a transportation<br>"+
-            "method must be to be preferred over other methods",
-        position = 34,
-        closedByDefault = true
-    )
-    String sectionThresholds = "sectionThresholds";
-
-    @Range(
-        min = 0,
-        max = 10000
-    )
-    @ConfigItem(
-        keyName = "costAgilityShortcuts",
-        name = "Agility shortcut threshold",
-        description = "How many extra tiles an agility shortcut must save<br>" +
-            "to be preferred over walking or other transports",
-        position = 35,
-        section = sectionThresholds
-    )
-    default int costAgilityShortcuts() {
-        return 0;
-    }
-
-    @Range(
-        min = 0,
-        max = 10000
-    )
-    @ConfigItem(
-        keyName = "costGrappleShortcuts",
-        name = "Grapple shortcut threshold",
-        description = "How many extra tiles a grapple shortcut must save<br>" +
-            "to be preferred over walking or other transports",
-        position = 36,
-        section = sectionThresholds
-    )
-    default int costGrappleShortcuts() {
-        return 0;
-    }
-
-    @Range(
-        min = 0,
-        max = 10000
-    )
-    @ConfigItem(
-        keyName = "costBoats",
-        name = "Boat threshold",
-        description = "How many extra tiles a small boat must save<br>" +
-            "to be preferred over walking or other transports",
-        position = 37,
-        section = sectionThresholds
-    )
-    default int costBoats() {
-        return 0;
-    }
-
-    @Range(
-        min = 0,
-        max = 10000
-    )
-    @ConfigItem(
-        keyName = "costCanoes",
-        name = "Canoe threshold",
-        description = "How many extra tiles a canoe must save<br>" +
-            "to be preferred over walking or other transports",
-        position = 38,
-        section = sectionThresholds
-    )
-    default int costCanoes() {
-        return 0;
-    }
-
-    @Range(
-        min = 0,
-        max = 10000
-    )
-    @ConfigItem(
-        keyName = "costCharterShips",
-        name = "Charter ship threshold",
-        description = "How many extra tiles a charter ship must save<br>" +
-            "to be preferred over walking or other transports",
-        position = 39,
-        section = sectionThresholds
-    )
-    default int costCharterShips() {
-        return 0;
-    }
-
-    @Range(
-        min = 0,
-        max = 10000
-    )
-    @ConfigItem(
-        keyName = "costShips",
-        name = "Ship threshold",
-        description = "How many extra tiles a passenger ship must save<br>" +
-            "to be preferred over walking or other transports",
-        position = 40,
-        section = sectionThresholds
-    )
-    default int costShips() {
-        return 0;
-    }
-
-    @Range(
-        min = 0,
-        max = 10000
-    )
-    @ConfigItem(
-        keyName = "costFairyRings",
-        name = "Fairy ring threshold",
-        description = "How many extra tiles a fairy ring must save<br>" +
-            "to be preferred over walking or other transports",
-        position = 41,
-        section = sectionThresholds
-    )
-    default int costFairyRings() {
-        return 0;
-    }
-
-    @Range(
-        min = 0,
-        max = 10000
-    )
-    @ConfigItem(
-        keyName = "costGnomeGliders",
-        name = "Gnome glider threshold",
-        description = "How many extra tiles a gnome glider must save<br>" +
-            "to be preferred over walking or other transports",
-        position = 42,
-        section = sectionThresholds
-    )
-    default int costGnomeGliders() {
-        return 0;
-    }
-
-    @Range(
-        min = 0,
-        max = 10000
-    )
-    @ConfigItem(
-        keyName = "costHotAirBalloons",
-        name = "Hot air balloon threshold",
-        description = "How many extra tiles a hot air balloon must save<br>" +
-            "to be preferred over walking or other transports",
-        position = 43,
-        section = sectionThresholds
-    )
-    default int costHotAirBalloons() {
-        return 0;
-    }
-
-    @Range(
-        min = 0,
-        max = 10000
-    )
-    @ConfigItem(
-        keyName = "costMagicCarpets",
-        name = "Magic carpets threshold",
-        description = "How many extra tiles a magic carpet must save<br>" +
-            "to be preferred over walking or other transports",
-        position = 44,
-        section = sectionThresholds
-    )
-    default int costMagicCarpets() {
-        return 0;
-    }
-
-    @Range(
-        min = 0,
-        max = 10000
-    )
-    @ConfigItem(
-        keyName = "costMagicMushtrees",
-        name = "Magic mushtrees threshold",
-        description = "How many extra tiles a magic mushtree must save<br>" +
-            "to be preferred over walking or other transports",
-        position = 45,
-        section = sectionThresholds
-    )
-    default int costMagicMushtrees() {
-        return 0;
-    }
-
-    @Range(
-        min = 0,
-        max = 10000
-    )
-    @ConfigItem(
-        keyName = "costMinecarts",
-        name = "Minecart threshold",
-        description = "How many extra tiles a minecart must save<br>" +
-            "to be preferred over walking or other transports",
-        position = 46,
-        section = sectionThresholds
-    )
-    default int costMinecarts() {
-        return 0;
-    }
-
-    @Range(
-        min = 0,
-        max = 10000
-    )
-    @ConfigItem(
-        keyName = "costQuetzals",
-        name = "Quetzal threshold",
-        description = "How many extra tiles a quetzal must save<br>" +
-            "to be preferred over walking or other transports",
-        position = 47,
-        section = sectionThresholds
-    )
-    default int costQuetzals() {
-        return 0;
-    }
-
-    @Range(
-        min = 0,
-        max = 10000
-    )
-    @ConfigItem(
-        keyName = "costSpiritTrees",
-        name = "Spirit tree threshold",
-        description = "How many extra tiles a spirit tree must save<br>" +
-            "to be preferred over walking or other transports",
-        position = 48,
-        section = sectionThresholds
-    )
-    default int costSpiritTrees() {
-        return 0;
-    }
-
-    @Range(
-        min = 0,
-        max = 10000
-    )
-    @ConfigItem(
-        keyName = "costNonConsumableTeleportationItems",
-        name = "Teleportation item (non-consumable) threshold",
-        description = "How many extra tiles a non-consumable (permanent) teleportation item<br>" +
-            "must save to be preferred over walking or other transports",
-        position = 49,
-        section = sectionThresholds
-    )
-    default int costNonConsumableTeleportationItems() {
-        return 0;
-    }
-
-    @Range(
-        min = 0,
-        max = 10000
-    )
-    @ConfigItem(
-        keyName = "costConsumableTeleportationItems",
-        name = "Teleportation item (consumable) threshold",
-        description = "How many extra tiles a consumable (non-permanent) teleportation item<br>" +
-            "must save to be preferred over walking or other transports",
-        position = 50,
-        section = sectionThresholds
-    )
-    default int costConsumableTeleportationItems() {
-        return 0;
-    }
-
-    @Range(
-        min = 0,
-        max = 10000
-    )
-    @ConfigItem(
-        keyName = "costTeleportationBoxes",
-        name = "Teleportation box threshold",
-        description = "How many extra tiles a teleportation box must save<br>" +
-            "to be preferred over walking or other transports",
-        position = 51,
-        section = sectionThresholds
-    )
-    default int costTeleportationBoxes() {
-        return 0;
-    }
-
-    @Range(
-        min = 0,
-        max = 10000
-    )
-    @ConfigItem(
-        keyName = "costTeleportationLevers",
-        name = "Teleportation lever threshold",
-        description = "How many extra tiles a teleportation lever must save<br>" +
-            "to be preferred over walking or other transports",
-        position = 52,
-        section = sectionThresholds
-    )
-    default int costTeleportationLevers() {
-        return 0;
-    }
-
-    @Range(
-        min = 0,
-        max = 10000
-    )
-    @ConfigItem(
-        keyName = "costTeleportationPortals",
-        name = "Teleportation portal threshold",
-        description = "How many extra tiles a teleportation portal must save<br>" +
-            "to be preferred over walking or other transports",
-        position = 53,
-        section = sectionThresholds
-    )
-    default int costTeleportationPortals() {
-        return 0;
-    }
-
-    @Range(
-        min = 0,
-        max = 10000
-    )
-    @ConfigItem(
-        keyName = "costTeleportationSpells",
-        name = "Teleportation spell threshold",
-        description = "How many extra tiles a teleportation spell must save<br>" +
-            "to be preferred over walking or other transports",
-        position = 54,
-        section = sectionThresholds
-    )
-    default int costTeleportationSpells() {
-        return 0;
-    }
-
-    @Range(
-        min = 0,
-        max = 10000
-    )
-    @ConfigItem(
-        keyName = "costTeleportationMinigames",
-        name = "Teleportation to minigame threshold",
-        description = "How many extra tiles a minigame teleport must save<br>" +
-            "to be preferred over walking or other transports",
-        position = 55,
-        section = sectionThresholds
-    )
-    default int costTeleportationMinigames() {
-        return 0;
-    }
-
-    @Range(
-        min = 0,
-        max = 10000
-    )
-    @ConfigItem(
-        keyName = "costWildernessObelisks",
-        name = "Wilderness obelisk threshold",
-        description = "How many extra tiles a wilderness obelisk must save<br>" +
-            "to be preferred over walking or other transports",
-        position = 56,
-        section = sectionThresholds
-    )
-    default int costWildernessObelisks() {
-        return 0;
-    }
-
-    @Range(
-        min = 0,
-        max = 10000
-    )
-    @ConfigItem(
-        keyName = "costSeasonalTransports",
-        name = "Seasonal transport threshold",
-        description = "How many extra tiles a seasonal transport must save<br>" +
-            "to be preferred over walking or other transports",
-        position = 57,
-        section = sectionThresholds
-    )
-    default int costSeasonalTransports() {
-        return 0;
-    }
-
-    @ConfigSection(
-        name = "Display",
-        description = "Options for displaying the path on the world map, minimap and scene tiles",
-        position = 58
-    )
-    String sectionDisplay = "sectionDisplay";
-
-    @ConfigItem(
-        keyName = "drawMap",
-        name = "Draw path on world map",
-        description = "Whether the path should be drawn on the world map",
-        position = 59,
-        section = sectionDisplay
-    )
-    default boolean drawMap() {
-        return true;
-    }
-
-    @ConfigItem(
-        keyName = "drawMinimap",
-        name = "Draw path on minimap",
-        description = "Whether the path should be drawn on the minimap",
-        position = 60,
-        section = sectionDisplay
-    )
-    default boolean drawMinimap() {
-        return true;
-    }
-
-    @ConfigItem(
         keyName = "drawTiles",
         name = "Draw path on tiles",
         description = "Whether the path should be drawn on the game tiles",
         position = 61,
-        section = sectionDisplay
+        section = sectionSettings
     )
     default boolean drawTiles() {
         return true;
-    }
-
-    @ConfigItem(
-        keyName = "pathStyle",
-        name = "Path style",
-        description = "Whether to display the path as tiles or a segmented line",
-        position = 62,
-        section = sectionDisplay
-    )
-    default TileStyle pathStyle() {
-        return TileStyle.TILES;
     }
 
     @ConfigSection(
@@ -900,103 +366,93 @@ public interface ShortestPathConfig extends Config {
         return new Color(0, 128, 255, 128);
     }
 
-    @Alpha
-    @ConfigItem(
-        keyName = "colourText",
-        name = "Text",
-        description = "Colour of the text of the tile counter and fairy ring codes",
-        position = 68,
-        section = sectionColours
-    )
-    default Color colourText() {
-        return Color.WHITE;
-    }
-
-    @ConfigSection(
-        name = "Debug Options",
-        description = "Various options for debugging",
-        position = 69,
-        closedByDefault = true
-    )
-    String sectionDebug = "sectionDebug";
-
-    @ConfigItem(
-        keyName = "drawTransports",
-        name = "Draw transports",
-        description = "Whether transports should be drawn",
-        position = 70,
-        section = sectionDebug
-    )
-    default boolean drawTransports() {
-        return false;
-    }
-
     @ConfigItem(
         keyName = "drawCollisionMap",
         name = "Draw collision map",
         description = "Whether the collision map should be drawn",
         position = 71,
-        section = sectionDebug
+        section = sectionSettings
     )
     default boolean drawCollisionMap() {
         return false;
     }
 
-    @ConfigItem(
-        keyName = "drawDebugPanel",
-        name = "Show debug panel",
-        description = "Toggles displaying the pathfinding debug stats panel",
-        position = 72,
-        section = sectionDebug
-    )
-    default boolean drawDebugPanel() {
+    default boolean useSeasonalTransports() {
         return false;
     }
 
-    @ConfigItem(
-        keyName = "postTransports",
-        name = "Post transports",
-        description = "Whether to post the transports used in the current path as a PluginMessage event",
-        position = 73,
-        section = sectionDebug
-    )
-    default boolean postTransports() {
+    default boolean includeBankPath() {
         return false;
     }
 
-    @ConfigItem(
-        keyName = "builtTeleportationBoxes",
-        name = "",
-        description = "ID=X Y Z;ID=X Y Z;ID=X Y Z",
-        hidden = true
-    )
+    default int currencyThreshold() {
+        return 100000;
+    }
+
+    // description = "Whether the path should be cancelled rather than recalculated " +
+    //     "when the recalculate distance limit is exceeded",
+    default boolean cancelInstead() {
+        return false;
+    }
+
+    default int recalculateDistance() {
+        return 10;
+    }
+
+    default int reachedDistance() {
+        return 5;
+    }
+
+    default boolean showTransportInfo() {
+        return true;
+    }
+
+	// COST BEGIN
+    default int costAgilityShortcuts()					{ return 0; }
+    default int costGrappleShortcuts()					{ return 0; }
+    default int costBoats()								{ return 0; }
+    default int costCanoes()							{ return 0; }
+    default int costCharterShips()						{ return 0; }
+    default int costShips()								{ return 0; }
+    default int costFairyRings()						{ return 0; }
+    default int costGnomeGliders()						{ return 0; }
+    default int costHotAirBalloons()					{ return 0; }
+    default int costMagicCarpets()						{ return 0; }
+    default int costMagicMushtrees()					{ return 0; }
+    default int costMinecarts()							{ return 0; }
+    default int costQuetzals()							{ return 0; }
+    default int costSpiritTrees()						{ return 0; }
+    default int costNonConsumableTeleportationItems()	{ return 0; }
+    default int costConsumableTeleportationItems()		{ return 0; }
+    default int costTeleportationBoxes()				{ return 0; }
+    default int costTeleportationLevers()				{ return 0; }
+    default int costTeleportationPortals()				{ return 0; }
+    default int costTeleportationSpells()				{ return 0; }
+    default int costTeleportationMinigames()			{ return 0; }
+    default int costWildernessObelisks()				{ return 0; }
+    default int costSeasonalTransports()				{ return 0; }
+	// COST END
+
+    // description = "Colour of the text of the tile counter and fairy ring codes",
+    default Color colourText() {
+        return Color.WHITE;
+    }
+
+
+	// DEBUG
+    default boolean drawTransports() {
+        return false;
+    }
+
     default String builtTeleportationBoxes() {
         return "";
     }
 
-    @ConfigItem(
-        keyName = "builtTeleportationBoxes",
-        name = "",
-        description = "",
-        hidden = true
-    )
     void setBuiltTeleportationBoxes(String content);
 
-    @ConfigItem(
-        keyName = "builtTeleportationPortalsPoh",
-        name = "",
-        description = "ID=X Y Z;ID=X Y Z;ID=X Y Z",
-        hidden = true
-    )
     default String builtTeleportationPortalsPoh() {
         return "";
     }
 
-    @ConfigItem(
-        keyName = "builtTeleportationPortalsPoh",
-        name = "",
-        description = "",
-        hidden = true
-    )
     void setBuiltTeleportationPortalsPoh(String content);
 }
