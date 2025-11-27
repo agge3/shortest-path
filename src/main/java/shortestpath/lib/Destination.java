@@ -39,7 +39,7 @@ public class Destination {
         final String DELIM = " ";
 
         try {
-            String s = new String(Util.readAllBytes(ShortestPathPlugin.class.getResourceAsStream(path)), StandardCharsets.UTF_8);
+            String s = new String(Util.readAllBytes(Destination.class.getResourceAsStream(path)), StandardCharsets.UTF_8);
             Scanner scanner = new Scanner(s);
 
             // Header line is the first line in the file and will start with either '#' or '# '

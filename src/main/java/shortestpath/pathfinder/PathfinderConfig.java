@@ -48,9 +48,8 @@ import net.runelite.api.gameval.InventoryID;
 import net.runelite.api.gameval.ItemID;
 import net.runelite.api.gameval.VarPlayerID;
 import net.runelite.api.gameval.VarbitID;
+import shortestpath.*;
 import shortestpath.TeleportationItem;
-import shortestpath.ShortestPathConfig;
-import shortestpath.ShortestPathPlugin;
 import shortestpath.Destination;
 import shortestpath.ItemVariations;
 import shortestpath.PrimitiveIntHashMap;
@@ -102,7 +101,7 @@ public class PathfinderConfig {
     private Map<String, Set<Integer>> destinations;
 
     private final Client client;
-    private final ShortestPathConfig config;
+    private final PathingConfig config;
 
     @Getter
     private long calculationCutoffMillis;

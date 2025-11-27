@@ -9,7 +9,6 @@ import java.util.zip.ZipInputStream;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import shortestpath.ShortestPathPlugin;
 import shortestpath.Util;
 
 import static net.runelite.api.Constants.REGION_SIZE;
@@ -68,7 +67,8 @@ public class SplitFlagMap {
 
     public static SplitFlagMap fromResources() {
         Map<Integer, byte[]> compressedRegions = new HashMap<>();
-        try (ZipInputStream in = new ZipInputStream(ShortestPathPlugin.class.getResourceAsStream("/collision-map.zip"))) {
+		// get collision map from root of this package's classpath (resources)
+        try (ZipInputStream in = new ZipInputStream(SplitFlagMap.class.getResourceAsStream("/collision-map.zip"))) {
             int minX = Integer.MAX_VALUE;
             int minY = Integer.MAX_VALUE;
             int maxX = 0;

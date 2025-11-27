@@ -19,9 +19,9 @@ import java.awt.Color;
  * @note groovy can modify the object at runtime!
  */
 @Getter
-@Acessors(fluent = true)
+@Accessors(fluent = true)
 public class PathingConfig {
-	public static final DEFAULT_CALCULATION_CUTOFF = 5;
+	public static final int DEFAULT_CALCULATION_CUTOFF = 5;
 
 	// TRANSPORT TOGGLES
 	public boolean avoidWilderness = true;

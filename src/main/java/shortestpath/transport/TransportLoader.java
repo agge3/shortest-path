@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
-import shortestpath.ShortestPathPlugin;
 import shortestpath.Util;
 import shortestpath.WorldPointUtil;
 
@@ -23,7 +22,7 @@ public class TransportLoader {
 
     private static void addTransports(Map<Integer, Set<Transport>> transports, String path, TransportType transportType, int radiusThreshold) {
         try {
-            String s = new String(Util.readAllBytes(ShortestPathPlugin.class.getResourceAsStream(path)), StandardCharsets.UTF_8);
+            String s = new String(Util.readAllBytes(TransportLoader.class.getResourceAsStream(path)), StandardCharsets.UTF_8);
             addTransportsFromContents(transports, s, transportType, radiusThreshold);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -66,15 +65,15 @@ public class TransportLoader {
         * A transport with origin A and destination B is one-way and must
         * be duplicated as origin B and destination A to become two-way.
         * Example: key-locked doors
-        * 
+        *
         * A transport with origin A and a missing destination is one-way,
         * but can go from origin A to all destinations with a missing origin.
         * Example: fairy ring AIQ -> <blank>
-        * 
+        *
         * A transport with a missing origin and destination B is one-way,
         * but can go from all origins with a missing destination to destination B.
         * Example: fairy ring <blank> -> AIQ
-        * 
+        *
         * Identical transports from origin A to destination A are skipped, and
         * non-identical transports from origin A to destination A can be skipped
         * by specifying a radius threshold to ignore almost identical coordinates.

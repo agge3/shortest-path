@@ -1,6 +1,10 @@
 package shortestpath;
 
+import net.runelite.api.coords.WorldPoint;
+
 import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * A minimal, growable list implementation for primitive {@code int} values.
@@ -258,7 +262,7 @@ public class PrimitiveIntList {
 	public List<WorldPoint> toWorldPoints() {
 		List<WorldPoint> wpPath = new ArrayList<>(size);
 		for (int i = 0; i < size; i++) {
-			wpPath.add(WorldPointUtil.unpackWorldPoint(elementData[i]);
+			wpPath.add(WorldPointUtil.unpackWorldPoint(elementData[i]));
 		}
 		return wpPath;
 	}

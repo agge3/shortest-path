@@ -7,13 +7,14 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import lombok.Getter;
 import shortestpath.PrimitiveIntList;
 import lombok.Setter;
 import net.runelite.api.coords.WorldPoint;
 import shortestpath.WorldPointUtil;
 
-public class Pathfinder implements Callable<PathfinderResult> {
+public class Pathfinder implements Callable<Pathfinder.PathfinderResult> {
     private PathfinderStats stats;
     private volatile boolean done = false;
     private volatile boolean cancelled = false;
@@ -53,11 +54,11 @@ public class Pathfinder implements Callable<PathfinderResult> {
 	private final int DEFAULT_WILDERNESS_LEVEL = 31;
 
     public Pathfinder(PathfinderConfig config, int start, int target) {
-		this.init(config, start, end);
+		this.init(config, start, target);
     }
 
-	public Pathfinder(PathfinderConfig, int start, int end) {
-		this(config, WorldPointUtil.packWorldPoint(start), WorldPointUtil.packWorldPoint(end));
+	public Pathfinder(PathfinderConfig config, WorldPoint start, WorldPoint target) {
+		this(config, WorldPointUtil.packWorldPoint(start), WorldPointUtil.packWorldPoint(target));
 	}
 
 	public void init(PathfinderConfig config, int start, int end) {
@@ -79,7 +80,7 @@ public class Pathfinder implements Callable<PathfinderResult> {
 
 		// input calls
         start = WorldPointUtil.UNDEFINED;
-        target = WorldPoint.UNDEFINED;
+        target = WorldPointUtil.UNDEFINED;
 
 		// pathfinding algorithm state
 		boundary.clear();
@@ -94,25 +95,26 @@ public class Pathfinder implements Callable<PathfinderResult> {
 		// wilderness tracking
 		wildernessLevel = DEFAULT_WILDERNESS_LEVEL;
 		// xxx what should the default value be?
-		targetInWilderness = WildernessChecker.isInWilderness(targets);
+		targetInWilderness = WildernessChecker.isInWilderness(target);
 
 		stats = null;	// init creates
     }
 
-	public void restart(PathfinderConfig config, WorldPoint start, WorldPoint end) {
-		restart(config, WorldPointUtil.packWorldPoint(start), WorldPointUtil.packWorldPoint(end));
+	public void restart(PathfinderConfig config, WorldPoint start, WorldPoint target) {
+		restart(config, WorldPointUtil.packWorldPoint(start), WorldPointUtil.packWorldPoint(target));
 	}
 
-	public void restart(WorldPoint start, WorldPoint end) {
-		restart(config, start, end);
+	public void restart(WorldPoint start, WorldPoint target) {
+		restart(config, start, target);
+	}
 
-	public void restart(PathfinderConfig config, int start, int end) {
+	public void restart(PathfinderConfig config, int start, int target) {
 		reset();
-		init(config, start, targets);
+		init(config, start, target);
 	}
 
-	public void restart(int start, int end) {
-		restart(config, start, targets);
+	public void restart(int start, int target) {
+		restart(config, start, target);
 	}
 
     public boolean isDone() {
@@ -123,20 +125,19 @@ public class Pathfinder implements Callable<PathfinderResult> {
         cancelled = true;
     }
 
-	/**
-	 * Return path as WorldPoints instead of APIs packed PrimitiveIntList, for
-	 * cross-plugin pathing consistent with WorldPoints.
-	 */
-	public List<WorldPoint> getPathWp() {
-		PrimitiveIntList primPath = getPath();
-		List<WorldPoint> wpPath = new ArrayList<>(primPath.size());
+    public PrimitiveIntList getPath() {
+        Node lastNode = bestLastNode; // For thread safety, read bestLastNode once
+        if (lastNode == null) {
+            return path;
+        }
 
-		for (int i = 0; i < primPath.size(); ++i) {
-			wpPath.add(WorldPointUtil.unpackWorldPoint(primPath.get(i)));
-		}
+        if (pathNeedsUpdate) {
+            path = lastNode.getPath();
+            pathNeedsUpdate = false;
+        }
 
-		return wpPath;
-	}
+        return path;
+    }
 
     private void addNeighbors(Node node) {
         List<Node> nodes = map.getNeighbors(node, visited, config, wildernessLevel);
@@ -235,7 +236,7 @@ public class Pathfinder implements Callable<PathfinderResult> {
 
         stats.end(); // Include cleanup in stats to get the total cost of pathfinding
 
-		return new PathfinderResult(path, stats);
+		return new PathfinderResult(getPath(), stats);
     }
 
     public static class PathfinderStats {
@@ -274,7 +275,7 @@ public class Pathfinder implements Callable<PathfinderResult> {
 		}
     }
 
-	public static class PathfinderResult {
+	public class PathfinderResult {
 		public PrimitiveIntList path;
 		public PathfinderStats stats;
 		PathfinderResult(PrimitiveIntList path, PathfinderStats stats) {
