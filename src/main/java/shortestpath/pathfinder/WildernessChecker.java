@@ -41,6 +41,10 @@ public class WildernessChecker {
     }
 
     public static boolean isInWilderness(Set<Integer> packedPoints) {
+		if (packedPoints == null) {
+			return false;
+		}
+
         for (int packedPoint : packedPoints) {
             if (isInWilderness(packedPoint)) {
                 return true;

@@ -1,12 +1,22 @@
 package shortestpath;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
+
 import java.awt.Color;
 
 /**
  * static Config class, to be easily modified and viewed all inline. If one
  * plugin changes this class, then all will keep changes (so update state to
  * expected state if last plugin's configuration is not ideal).
+ *
+ * lombok: getters have the same function signature has the variable name (to
+ * match ShortestPathConfig)
+ * 	ex.
+ * 		boolean avoidWilderness; -> boolean avoidWilderness();
  */
+@Getter
+@Acessors(fluent = true)
 public class DefaultConfig {
 	// TRANSPORT TOGGLES
 	public static boolean avoidWilderness = true;

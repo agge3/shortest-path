@@ -9,7 +9,6 @@ import java.util.Queue;
 import java.util.Set;
 import lombok.Getter;
 import shortestpath.PrimitiveIntList;
-import shortestpath.ShortestPathPlugin;
 import lombok.Setter;
 import net.runelite.api.coords.WorldPoint;
 import shortestpath.WorldPointUtil;
@@ -27,16 +26,16 @@ public class Pathfinder implements Runnable {
     @Getter
     private Set<Integer> targets;
 
-    private final ShortestPathPlugin plugin;
-    private final PathfinderConfig config;
-    private final CollisionMap map;
-    private final boolean targetInWilderness;
+    private PathfinderConfig config;
+    private CollisionMap map;
+	// needs to be modified and derived from target for reset
+    private boolean targetInWilderness;
 
     // Capacities should be enough to store all nodes without requiring the queue to grow
     // They were found by checking the max queue size
     private final Deque<Node> boundary = new ArrayDeque<>(4096);
     private final Queue<Node> pending = new PriorityQueue<>(256);
-    private final VisitedTiles visited;
+    private VisitedTiles visited;
 
     private PrimitiveIntList path = new PrimitiveIntList();
     private boolean pathNeedsUpdate = false;
@@ -51,23 +50,59 @@ public class Pathfinder implements Runnable {
      */
     private int wildernessLevel;
 
-    public Pathfinder(ShortestPathPlugin plugin, PathfinderConfig config, int start, Set<Integer> targets) {
+	private final int DEFAULT_WILDERNESS_LEVEL = 31;
+
+    public Pathfinder(PathfinderConfig config, int start, Set<Integer> targets) {
+		this.init(config, start, targets);
+    }
+
+	public void init(PathfinderConfig config, int start, Set<Integer> targets) {
         stats = new PathfinderStats();
-        this.plugin = plugin;
         this.config = config;
         this.map = config.getMap();
         this.start = start;
         this.targets = targets;
         visited = new VisitedTiles(map);
         targetInWilderness = WildernessChecker.isInWilderness(targets);
-        wildernessLevel = 31;
-    }
+        wildernessLevel = DEFAULT_WILDERNESS_LEVEL;
+	}
 
     public void reset()
     {
-        start = -1;	// xxx what's invalid sentinel int?
+		// pathfinder state
+		done = false;
+		cancelled = false;
+
+		// input calls
+        start = WorldPointUtil.UNDEFINED;
         targets = null;
+
+		// pathfinding algorithm state
+		boundary.clear();
+		pending.clear();
+		visited = null;	// init creates
+
+		// output state
+		path = new PrimitiveIntList();
+		pathNeedsUpdate = false;
+		bestLastNode = null;	// run creates
+
+		// wilderness tracking
+		wildernessLevel = DEFAULT_WILDERNESS_LEVEL;
+		// xxx what should the default value be?
+		targetInWilderness = WildernessChecker.isInWilderness(targets);
+
+		stats = null;	// init creates
     }
+
+	public void restart(PathfinderConfig config, int start, Set<Integer> targets) {
+		reset();
+		init(config, start, targets);
+	}
+
+	public void restart(int start, Set<Integer> targets) {
+		restart(config, start, targets);
+	}
 
     public boolean isDone() {
         return done;
@@ -240,5 +275,14 @@ public class Pathfinder implements Runnable {
             endNanos = System.nanoTime();
             ended = true;
         }
+
+		@Override
+		public String toString() {
+			return String.format("[ nodesChecked: %d, transportsChecked: %d, " +
+				"startNanos: %d, endNanos: %d, started: %b, ended: %b, " +
+				"totalNodesChecked: %d, elapsedTimeNanos: %d ]", nodesChecked,
+				transportsChecked, startNanos, endNanos, started, ended,
+				getTotalNodesChecked(), getElapsedTimeNanos());
+		}
     }
 }
