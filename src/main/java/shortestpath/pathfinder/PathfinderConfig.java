@@ -144,7 +144,7 @@ public class PathfinderConfig {
 
     public ItemContainer bank = null;
 
-    public PathfinderConfig(Client client, ShortestPathConfig config) {
+    public PathfinderConfig(Client client, PathingConfig config) {
         this.client = client;
         this.config = config;
         this.mapData = SplitFlagMap.fromResources();

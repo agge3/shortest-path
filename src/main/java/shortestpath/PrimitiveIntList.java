@@ -254,4 +254,12 @@ public class PrimitiveIntList {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
         }
     }
+
+	public List<WorldPoint> toWorldPoints() {
+		List<WorldPoint> wpPath = new ArrayList<>(size);
+		for (int i = 0; i < size; i++) {
+			wpPath.add(WorldPointUtil.unpackWorldPoint(elementData[i]);
+		}
+		return wpPath;
+	}
 }

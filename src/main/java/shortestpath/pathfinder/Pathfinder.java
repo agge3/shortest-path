@@ -13,7 +13,7 @@ import lombok.Setter;
 import net.runelite.api.coords.WorldPoint;
 import shortestpath.WorldPointUtil;
 
-public class Pathfinder implements Runnable {
+public class Pathfinder implements Callable<PathfinderResult> {
     private PathfinderStats stats;
     private volatile boolean done = false;
     private volatile boolean cancelled = false;
@@ -24,10 +24,10 @@ public class Pathfinder implements Runnable {
 
 	@Setter
     @Getter
-    private Set<Integer> targets;
+    private WorldPoint target;
 
-    private PathfinderConfig config;
-    private CollisionMap map;
+    public PathfinderConfig config;
+    public CollisionMap map;
 	// needs to be modified and derived from target for reset
     private boolean targetInWilderness;
 
@@ -52,18 +52,22 @@ public class Pathfinder implements Runnable {
 
 	private final int DEFAULT_WILDERNESS_LEVEL = 31;
 
-    public Pathfinder(PathfinderConfig config, int start, Set<Integer> targets) {
-		this.init(config, start, targets);
+    public Pathfinder(PathfinderConfig config, int start, int target) {
+		this.init(config, start, end);
     }
 
-	public void init(PathfinderConfig config, int start, Set<Integer> targets) {
+	public Pathfinder(PathfinderConfig, int start, int end) {
+		this(config, WorldPointUtil.packWorldPoint(start), WorldPointUtil.packWorldPoint(end));
+	}
+
+	public void init(PathfinderConfig config, int start, int end) {
         stats = new PathfinderStats();
         this.config = config;
         this.map = config.getMap();
         this.start = start;
-        this.targets = targets;
+        this.target = target;
         visited = new VisitedTiles(map);
-        targetInWilderness = WildernessChecker.isInWilderness(targets);
+        targetInWilderness = WildernessChecker.isInWilderness(target);
         wildernessLevel = DEFAULT_WILDERNESS_LEVEL;
 	}
 
@@ -75,7 +79,7 @@ public class Pathfinder implements Runnable {
 
 		// input calls
         start = WorldPointUtil.UNDEFINED;
-        targets = null;
+        target = WorldPoint.UNDEFINED;
 
 		// pathfinding algorithm state
 		boundary.clear();
@@ -95,12 +99,19 @@ public class Pathfinder implements Runnable {
 		stats = null;	// init creates
     }
 
-	public void restart(PathfinderConfig config, int start, Set<Integer> targets) {
+	public void restart(PathfinderConfig config, WorldPoint start, WorldPoint end) {
+		restart(config, WorldPointUtil.packWorldPoint(start), WorldPointUtil.packWorldPoint(end));
+	}
+
+	public void restart(WorldPoint start, WorldPoint end) {
+		restart(config, start, end);
+
+	public void restart(PathfinderConfig config, int start, int end) {
 		reset();
 		init(config, start, targets);
 	}
 
-	public void restart(int start, Set<Integer> targets) {
+	public void restart(int start, int end) {
 		restart(config, start, targets);
 	}
 
@@ -110,29 +121,6 @@ public class Pathfinder implements Runnable {
 
     public void cancel() {
         cancelled = true;
-    }
-
-    public PathfinderStats getStats() {
-        if (stats.started && stats.ended) {
-            return stats;
-        }
-
-        // Don't give incomplete results
-        return null;
-    }
-
-    public PrimitiveIntList getPath() {
-        Node lastNode = bestLastNode; // For thread safety, read bestLastNode once
-        if (lastNode == null) {
-            return path;
-        }
-
-        if (pathNeedsUpdate) {
-            path = lastNode.getPath();
-            pathNeedsUpdate = false;
-        }
-
-        return path;
     }
 
 	/**
@@ -171,7 +159,7 @@ public class Pathfinder implements Runnable {
     }
 
     @Override
-    public void run() {
+    public PathfinderResult call() {
         stats.start();
         boundary.addFirst(new Node(start, null));
 
@@ -216,22 +204,20 @@ public class Pathfinder implements Runnable {
                 }
             }
 
-            if (targets.contains(node.packedPosition)) {
+            if (target == node.packedPosition) {
                 bestLastNode = node;
                 pathNeedsUpdate = true;
                 break;
             }
 
-            for (int target : targets) {
-                int distance = WorldPointUtil.distanceBetween(node.packedPosition, target);
-                long heuristic = distance + (long) WorldPointUtil.distanceBetween(node.packedPosition, target, 2);
-                if (heuristic < bestHeuristic || (heuristic <= bestHeuristic && distance < bestDistance)) {
-                    bestLastNode = node;
-                    pathNeedsUpdate = true;
-                    bestDistance = distance;
-                    bestHeuristic = heuristic;
-                    cutoffTimeMillis = System.currentTimeMillis() + cutoffDurationMillis;
-                }
+            int distance = WorldPointUtil.distanceBetween(node.packedPosition, target);
+            long heuristic = distance + (long) WorldPointUtil.distanceBetween(node.packedPosition, target, 2);
+            if (heuristic < bestHeuristic || (heuristic <= bestHeuristic && distance < bestDistance)) {
+                bestLastNode = node;
+                pathNeedsUpdate = true;
+                bestDistance = distance;
+                bestHeuristic = heuristic;
+                cutoffTimeMillis = System.currentTimeMillis() + cutoffDurationMillis;
             }
 
             if (System.currentTimeMillis() > cutoffTimeMillis) {
@@ -248,6 +234,8 @@ public class Pathfinder implements Runnable {
         pending.clear();
 
         stats.end(); // Include cleanup in stats to get the total cost of pathfinding
+
+		return new PathfinderResult(path, stats);
     }
 
     public static class PathfinderStats {
@@ -285,4 +273,13 @@ public class Pathfinder implements Runnable {
 				getTotalNodesChecked(), getElapsedTimeNanos());
 		}
     }
+
+	public static class PathfinderResult {
+		public PrimitiveIntList path;
+		public PathfinderStats stats;
+		PathfinderResult(PrimitiveIntList path, PathfinderStats stats) {
+			this.path = path;
+			this.stats = stats;
+		}
+	}
 }
