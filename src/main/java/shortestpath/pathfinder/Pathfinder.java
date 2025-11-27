@@ -24,7 +24,7 @@ public class Pathfinder implements Callable<PathfinderResult> {
 
 	@Setter
     @Getter
-    private WorldPoint target;
+    private int target;
 
     public PathfinderConfig config;
     public CollisionMap map;
