@@ -11,6 +11,7 @@ import net.runelite.client.config.Units;
 
 @ConfigGroup(ShortestPathPlugin.CONFIG_GROUP)
 public interface ShortestPathConfig extends Config {
+	// short-circuit to code-driven (and not ui-driven) default config
 	public static final PathingConfig DEFAULT_CONFIG = new PathingConfig();
 
     @ConfigSection(
@@ -29,7 +30,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionSettings
     )
     default boolean avoidWilderness() {
-        return DefaultConfig.avoidWilderness;
+        return DEFAULT_CONFIG.avoidWilderness;
     }
 
     @ConfigItem(
@@ -41,7 +42,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionSettings
     )
     default boolean useAgilityShortcuts() {
-        return DefaultConfig.useAgilityShortcuts;
+        return DEFAULT_CONFIG.useAgilityShortcuts;
     }
 
     @ConfigItem(
@@ -53,7 +54,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionSettings
     )
     default boolean useGrappleShortcuts() {
-        return DefaultConfig.useGrappleShortcuts;
+        return DEFAULT_CONFIG.useGrappleShortcuts;
     }
 
     @ConfigItem(
@@ -65,7 +66,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionSettings
     )
     default boolean useBoats() {
-        return DefaultConfig.useBoats;
+        return DEFAULT_CONFIG.useBoats;
     }
 
     @ConfigItem(
@@ -87,7 +88,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionSettings
     )
     default boolean useCharterShips() {
-        return DefaultConfig.useCharterShips;
+        return DEFAULT_CONFIG.useCharterShips;
     }
 
     @ConfigItem(
@@ -99,7 +100,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionSettings
     )
     default boolean useShips() {
-        return DefaultConfig.useShips;
+        return DEFAULT_CONFIG.useShips;
     }
 
     @ConfigItem(
@@ -111,7 +112,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionSettings
     )
     default boolean useFairyRings() {
-        return DefaultConfig.useFairyRings;
+        return DEFAULT_CONFIG.useFairyRings;
     }
 
     @ConfigItem(
@@ -122,7 +123,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionSettings
     )
     default boolean useGnomeGliders() {
-        return DefaultConfig.useGnomeGliders;
+        return DEFAULT_CONFIG.useGnomeGliders;
     }
 
     @ConfigItem(
@@ -133,7 +134,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionSettings
     )
     default boolean useHotAirBalloons() {
-        return DefaultConfig.useHotAirBalloons;
+        return DEFAULT_CONFIG.useHotAirBalloons;
     }
 
     @ConfigItem(
@@ -144,7 +145,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionSettings
     )
     default boolean useMagicCarpets() {
-        return DefaultConfig.useMagicCarpets;
+        return DEFAULT_CONFIG.useMagicCarpets;
     }
 
     @ConfigItem(
@@ -156,7 +157,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionSettings
     )
     default boolean useMagicMushtrees() {
-        return DefaultConfig.useMagicMushtrees;
+        return DEFAULT_CONFIG.useMagicMushtrees;
     }
 
     @ConfigItem(
@@ -168,7 +169,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionSettings
     )
     default boolean useMinecarts() {
-        return DefaultConfig.useMinecarts;
+        return DEFAULT_CONFIG.useMinecarts;
     }
 
     @ConfigItem(
@@ -179,7 +180,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionSettings
     )
     default boolean useQuetzals() {
-        return DefaultConfig.useQuetzals;
+        return DEFAULT_CONFIG.useQuetzals;
     }
 
     @ConfigItem(
@@ -190,7 +191,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionSettings
     )
     default boolean useSpiritTrees() {
-        return DefaultConfig.useSpiritTrees;
+        return DEFAULT_CONFIG.useSpiritTrees;
     }
 
     @ConfigItem(
@@ -215,7 +216,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionSettings
     )
     default boolean useTeleportationBoxes() {
-        return DefaultConfig.useTeleportationBoxes;
+        return DEFAULT_CONFIG.useTeleportationBoxes;
     }
 
     @ConfigItem(
@@ -227,7 +228,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionSettings
     )
     default boolean useTeleportationLevers() {
-        return DefaultConfig.useTeleportationLevers;
+        return DEFAULT_CONFIG.useTeleportationLevers;
     }
 
     @ConfigItem(
@@ -239,7 +240,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionSettings
     )
     default boolean useTeleportationPortals() {
-        return DefaultConfig.useTeleportationPortals;
+        return DEFAULT_CONFIG.useTeleportationPortals;
     }
 
     @ConfigItem(
@@ -250,7 +251,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionSettings
     )
     default boolean useTeleportationPortalsPoh() {
-        return DefaultConfig.useTeleportationPortalsPoh;
+        return DEFAULT_CONFIG.useTeleportationPortalsPoh;
     }
 
     @ConfigItem(
@@ -261,7 +262,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionSettings
     )
     default boolean useTeleportationSpells() {
-        return DefaultConfig.useTeleportationSpells;
+        return DEFAULT_CONFIG.useTeleportationSpells;
     }
 
     @ConfigItem(
@@ -273,7 +274,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionSettings
     )
     default boolean useTeleportationMinigames() {
-        return DefaultConfig.useTeleportationMinigames;
+        return DEFAULT_CONFIG.useTeleportationMinigames;
     }
 
     @ConfigItem(
@@ -284,7 +285,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionSettings
     )
     default boolean useWildernessObelisks() {
-        return DefaultConfig.useWildernessObelisks;
+        return DEFAULT_CONFIG.useWildernessObelisks;
     }
 
 
@@ -298,7 +299,7 @@ public interface ShortestPathConfig extends Config {
     )
     default int calculationCutoff()
     {
-        return DefaultConfig.calculationCutoff;
+        return DEFAULT_CONFIG.calculationCutoff;
     }
 
     @ConfigItem(
@@ -309,7 +310,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionSettings
     )
     default boolean drawTiles() {
-        return DefaultConfig.drawTiles;
+        return DEFAULT_CONFIG.drawTiles;
     }
 
     @ConfigSection(
@@ -328,7 +329,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionColours
     )
     default Color colourPath() {
-        return DefaultConfig.colourPath;
+        return DEFAULT_CONFIG.colourPath;
     }
 
     @Alpha
@@ -341,7 +342,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionColours
     )
     default Color colourPathCalculating() {
-        return DefaultConfig.colourPathCalculating;
+        return DEFAULT_CONFIG.colourPathCalculating;
     }
 
     @Alpha
@@ -353,7 +354,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionColours
     )
     default Color colourTransports() {
-        return DefaultConfig.colourTransports;
+        return DEFAULT_CONFIG.colourTransports;
     }
 
     @Alpha
@@ -365,7 +366,7 @@ public interface ShortestPathConfig extends Config {
         section = sectionColours
     )
     default Color colourCollisionMap() {
-        return DefaultConfig.colourCollisionMap;
+        return DEFAULT_CONFIG.colourCollisionMap;
     }
 
     @ConfigItem(
@@ -376,84 +377,84 @@ public interface ShortestPathConfig extends Config {
         section = sectionSettings
     )
     default boolean drawCollisionMap() {
-        return DefaultConfig.drawCollisionMap;
+        return DEFAULT_CONFIG.drawCollisionMap;
     }
 
     default boolean useSeasonalTransports() {
-        return DefaultConfig.useSeasonalTransports;
+        return DEFAULT_CONFIG.useSeasonalTransports;
     }
 
     default boolean includeBankPath() {
-        return DefaultConfig.includeBankPath;
+        return DEFAULT_CONFIG.includeBankPath;
     }
 
     default int currencyThreshold() {
-        return DefaultConfig.currencyThreshold;
+        return DEFAULT_CONFIG.currencyThreshold;
     }
 
     // description = "Whether the path should be cancelled rather than recalculated " +
     //     "when the recalculate distance limit is exceeded",
     default boolean cancelInstead() {
-        return DefaultConfig.cancelInstead;
+        return DEFAULT_CONFIG.cancelInstead;
     }
 
     default int recalculateDistance() {
-        return DefaultConfig.recalculateDistance;
+        return DEFAULT_CONFIG.recalculateDistance;
     }
 
     default int reachedDistance() {
-        return DefaultConfig.reachedDistance;
+        return DEFAULT_CONFIG.reachedDistance;
     }
 
     default boolean showTransportInfo() {
-        return DefaultConfig.showTransportInfo;
+        return DEFAULT_CONFIG.showTransportInfo;
     }
 
 	// COST BEGIN
-    default int costAgilityShortcuts()					{ return DefaultConfig.costAgilityShortcuts; }
-    default int costGrappleShortcuts()					{ return DefaultConfig.costGrappleShortcuts; }
-    default int costBoats()								{ return DefaultConfig.costBoats; }
-    default int costCanoes()							{ return DefaultConfig.costCanoes; }
-    default int costCharterShips()						{ return DefaultConfig.costCharterShips; }
-    default int costShips()								{ return DefaultConfig.costShips; }
-    default int costFairyRings()						{ return DefaultConfig.costFairyRings; }
-    default int costGnomeGliders()						{ return DefaultConfig.costGnomeGliders; }
-    default int costHotAirBalloons()					{ return DefaultConfig.costHotAirBalloons; }
-    default int costMagicCarpets()						{ return DefaultConfig.costMagicCarpets; }
-    default int costMagicMushtrees()					{ return DefaultConfig.costMagicMushtrees; }
-    default int costMinecarts()							{ return DefaultConfig.costMinecarts; }
-    default int costQuetzals()							{ return DefaultConfig.costQuetzals; }
-    default int costSpiritTrees()						{ return DefaultConfig.costSpiritTrees; }
-    default int costNonConsumableTeleportationItems()	{ return DefaultConfig.costNonConsumableTeleportationItems; }
-    default int costConsumableTeleportationItems()		{ return DefaultConfig.costConsumableTeleportationItems; }
-    default int costTeleportationBoxes()				{ return DefaultConfig.costTeleportationBoxes; }
-    default int costTeleportationLevers()				{ return DefaultConfig.costTeleportationLevers; }
-    default int costTeleportationPortals()				{ return DefaultConfig.costTeleportationPortals; }
-    default int costTeleportationSpells()				{ return DefaultConfig.costTeleportationSpells; }
-    default int costTeleportationMinigames()			{ return DefaultConfig.costTeleportationMinigames; }
-    default int costWildernessObelisks()				{ return DefaultConfig.costWildernessObelisks; }
-    default int costSeasonalTransports()				{ return DefaultConfig.costSeasonalTransports; }
+    default int costAgilityShortcuts()					{ return DEFAULT_CONFIG.costAgilityShortcuts; }
+    default int costGrappleShortcuts()					{ return DEFAULT_CONFIG.costGrappleShortcuts; }
+    default int costBoats()								{ return DEFAULT_CONFIG.costBoats; }
+    default int costCanoes()							{ return DEFAULT_CONFIG.costCanoes; }
+    default int costCharterShips()						{ return DEFAULT_CONFIG.costCharterShips; }
+    default int costShips()								{ return DEFAULT_CONFIG.costShips; }
+    default int costFairyRings()						{ return DEFAULT_CONFIG.costFairyRings; }
+    default int costGnomeGliders()						{ return DEFAULT_CONFIG.costGnomeGliders; }
+    default int costHotAirBalloons()					{ return DEFAULT_CONFIG.costHotAirBalloons; }
+    default int costMagicCarpets()						{ return DEFAULT_CONFIG.costMagicCarpets; }
+    default int costMagicMushtrees()					{ return DEFAULT_CONFIG.costMagicMushtrees; }
+    default int costMinecarts()							{ return DEFAULT_CONFIG.costMinecarts; }
+    default int costQuetzals()							{ return DEFAULT_CONFIG.costQuetzals; }
+    default int costSpiritTrees()						{ return DEFAULT_CONFIG.costSpiritTrees; }
+    default int costNonConsumableTeleportationItems()	{ return DEFAULT_CONFIG.costNonConsumableTeleportationItems; }
+    default int costConsumableTeleportationItems()		{ return DEFAULT_CONFIG.costConsumableTeleportationItems; }
+    default int costTeleportationBoxes()				{ return DEFAULT_CONFIG.costTeleportationBoxes; }
+    default int costTeleportationLevers()				{ return DEFAULT_CONFIG.costTeleportationLevers; }
+    default int costTeleportationPortals()				{ return DEFAULT_CONFIG.costTeleportationPortals; }
+    default int costTeleportationSpells()				{ return DEFAULT_CONFIG.costTeleportationSpells; }
+    default int costTeleportationMinigames()			{ return DEFAULT_CONFIG.costTeleportationMinigames; }
+    default int costWildernessObelisks()				{ return DEFAULT_CONFIG.costWildernessObelisks; }
+    default int costSeasonalTransports()				{ return DEFAULT_CONFIG.costSeasonalTransports; }
 	// COST END
 
     // description = "Colour of the text of the tile counter and fairy ring codes",
     default Color colourText() {
-        return DefaultConfig.colourText;
+        return DEFAULT_CONFIG.colourText;
     }
 
 
 	// DEBUG
     default boolean drawTransports() {
-        return DefaultConfig.drawTransports;
+        return DEFAULT_CONFIG.drawTransports;
     }
 
     default String builtTeleportationBoxes() {
-        return DefaultConfig.builtTeleportationBoxes;
+        return DEFAULT_CONFIG.builtTeleportationBoxes;
     }
 
     void setBuiltTeleportationBoxes(String content);
 
     default String builtTeleportationPortalsPoh() {
-        return DefaultConfig.builtTeleportationPortalsPoh;
+        return DEFAULT_CONFIG.builtTeleportationPortalsPoh;
     }
 
     void setBuiltTeleportationPortalsPoh(String content);
