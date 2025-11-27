@@ -11,6 +11,8 @@ import net.runelite.client.config.Units;
 
 @ConfigGroup(ShortestPathPlugin.CONFIG_GROUP)
 public interface ShortestPathConfig extends Config {
+	public static final PathingConfig DEFAULT_CONFIG = new PathingConfig();
+
     @ConfigSection(
         name = "Settings",
         description = "Options for the pathfinding",
