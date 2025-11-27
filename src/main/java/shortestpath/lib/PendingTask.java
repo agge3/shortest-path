@@ -1,4 +1,4 @@
-package shortestpath;
+package shortestpath.lib;
 
 public class PendingTask {
     private final int tick;

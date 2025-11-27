@@ -1,4 +1,4 @@
-package shortestpath;
+package shortestpath.lib;
 
 import net.runelite.api.gameval.ItemID;
 import lombok.Getter;

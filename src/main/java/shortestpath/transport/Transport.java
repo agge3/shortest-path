@@ -6,7 +6,7 @@ import java.util.Set;
 import lombok.Getter;
 import net.runelite.api.Quest;
 import net.runelite.api.Skill;
-import shortestpath.ItemVariations;
+import shortestpath.lib.ItemVariations;
 import shortestpath.Util;
 import shortestpath.WorldPointUtil;
 import lombok.extern.slf4j.Slf4j;
