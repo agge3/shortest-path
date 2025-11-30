@@ -61,7 +61,7 @@ public class Pathfinder implements Callable<Pathfinder.PathfinderResult> {
 		this(config, WorldPointUtil.packWorldPoint(start), WorldPointUtil.packWorldPoint(target));
 	}
 
-	public void init(PathfinderConfig config, int start, int end) {
+	public void init(PathfinderConfig config, int start, int target) {
         stats = new PathfinderStats();
         this.config = config;
         this.map = config.getMap();

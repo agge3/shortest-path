@@ -169,6 +169,9 @@ public class PathfinderConfig {
         return destinations.get(destinationType);
     }
 
+	/**
+	 * NEED to refresh, or else values will be in default uninitialized state!
+	 */
     public void refresh() {
         calculationCutoffMillis = config.calculationCutoff() * Constants.GAME_TICK_LENGTH;
         avoidWilderness = config.avoidWilderness();
